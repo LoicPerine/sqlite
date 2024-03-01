@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from Model.BaseModel import BaseModel
+from Model.base_model import BaseModel
 
 @dataclass
 class Book(BaseModel):
@@ -17,6 +17,7 @@ class Book(BaseModel):
     @staticmethod
     def from_dict(data: dict):
         return Book(data['id'],data['name'],data["author"],data['content'],data['publication_year'])
+    
     @staticmethod
     def __from_tuple(data: tuple):
         return Book(data[0],data[1],data[2],data[3],data[4])

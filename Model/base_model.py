@@ -1,6 +1,6 @@
 import sqlite3
-
-class BaseModel:
+from abc import abstractmethod, ABC
+class BaseModel(ABC):
 
     db_name = './data/demo.db'
 
@@ -8,7 +8,7 @@ class BaseModel:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    @staticmethod
+    @classmethod
     def create(cls: type, **kwargs)-> tuple:
         with sqlite3.connect(cls.db_name) as conn:
             cursor = conn.cursor()
@@ -36,7 +36,10 @@ class BaseModel:
                 conditions.append(f"{field} {sql_op} ?")
                 values.append(value)
             conditions_str = ' AND '.join(conditions)
-            cursor.execute(f"SELECT * FROM {cls.__name__} WHERE {conditions_str}", values)
+            request_str = f"SELECT * FROM {cls.__name__}"
+            if conditions_str:
+                request_str += f" WHERE {conditions_str}"
+            cursor.execute(request_str, values)
             return cursor.fetchall()
 
     def update(self, **kwargs):
